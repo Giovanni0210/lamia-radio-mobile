@@ -314,4 +314,9 @@ input[type="number"] {
     flex-direction: column;
     border-radius: var(--radius-main);
   }
+  
+  .volume-controls,
+  .input-row {
+    display: none !important;
+  }
 }

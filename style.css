@@ -8,6 +8,10 @@
   --accent-red: #d13438;
   --accent-yellow: #ffcc00;
   --rds-red: #e60000;
+  --zeta-color: #7A17CC;
+  --rtlCaliente-color: #ff6600;
+  --rtlDisco-color: #27DC9A;
+  --ibiza-color: #00e5ff;
   --radius-main: 20px;
   --radius-sub: 12px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -102,7 +106,6 @@ body {
 	border-color: var(--rds-red);
 	box-shadow: 0 0 25px rgba(230, 0, 0, 0.4);
 }
-
 .radio-card#rdsCard i {
 	color: var(--accent-red);
 }
@@ -110,10 +113,41 @@ body {
 .radio-card#rtlCard i {
 	color: var(--accent-yellow);
 }
-
 .radio-card.active#rtlCard {
 	border-color: var(--accent-yellow);
 	box-shadow: 0 0 25px rgba(255, 204, 0, 0.4);
+}
+
+.radio-card#rtlCalienteCard i {
+	color: var(--rtlCaliente-color);
+}
+.radio-card.active#rtlCalienteCard {
+	border-color: var(--rtlCaliente-color);
+	box-shadow: 0 0 25px rgba(255, 102, 0, 0.4);
+}
+
+.radio-card#rtlDiscoCard i {
+	color: var(--rtlDisco-color);
+}
+.radio-card.active#rtlDiscoCard {
+	border-color: var(--rtlDisco-color);
+	box-shadow: 0 0 25px rgba(39, 220, 154, 0.4);
+}
+
+.radio-card#zetaCard i { 
+	color: var(--zeta-color); 
+}
+.radio-card.active#zetaCard {
+	border-color: var(--zeta-color);
+	box-shadow: 0 0 25px rgba(122, 23, 204, 0.4);
+}
+
+.radio-card#ibizaCard i { 
+	color: var(--ibiza-color); 
+}
+.radio-card.active#ibizaCard {
+	border-color: var(--ibiza-color);
+	box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
 }
 
 .radio-logo {

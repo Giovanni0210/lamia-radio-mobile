@@ -34,6 +34,39 @@
 							<span class="radio-name">RTL 102.5</span>
 						</div>
 					</div>
+					
+					<div class="radio-card" id="rtlCalienteCard">
+						<i class="fa-solid fa-circle-play play-indicator"></i>
+						<img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png" alt="RTL 102.5 Caliente Logo" class="radio-logo">
+						<div class="radio-info">
+							<span class="radio-name">RTL 102.5 Caliente</span>
+						</div>
+					</div>
+					
+					<div class="radio-card" id="rtlDiscoCard">
+						<i class="fa-solid fa-circle-play play-indicator"></i>
+						<img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png" alt="RTL 102.5 Disco Logo" class="radio-logo">
+						<div class="radio-info">
+							<span class="radio-name">RTL 102.5 Disco</span>
+						</div>
+					</div>
+					
+					<div class="radio-card" id="zetaCard">
+						<i class="fa-solid fa-circle-play play-indicator"></i>
+						<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Radio_Zeta_-_Logo_2020.svg/330px-Radio_Zeta_-_Logo_2020.svg.png" alt="Radio Zeta Logo" class="radio-logo">
+						<div class="radio-info">
+							<span class="radio-name">Radio Zeta</span>
+						</div>
+					</div>
+					
+					<div class="radio-card" id="ibizaCard">
+						<i class="fa-solid fa-circle-play play-indicator"></i>
+						<img src="https://radioibiza.it/wp-content/uploads/2021/09/cropped-logo_header.png" alt="Radio Ibiza Logo" class="radio-logo">
+						<div class="radio-info">
+							<span class="radio-name">Radio Ibizia</span>
+						</div>
+					</div>
+
 				</div>
 				
 				<button class="stop-btn" id="stopBtn">
@@ -80,21 +113,25 @@
 				player.pause();
 				player.src= url;
 				
+				const radioData = {
+					'rdsCard': { name: 'RDS', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/73/RDS-Logo.png' },
+					'rtlCard': { name: 'RTL 102.5', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
+					'rtlCalienteCard': { name: 'RTL 102.5 Caliente', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
+					'rtlDiscoCard': { name: 'RTL 102.5 Disco', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
+					'zetaCard': { name: 'Radio Zeta', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Radio_Zeta_-_Logo_2020.svg/330px-Radio_Zeta_-_Logo_2020.svg.png' },
+					'ibizaCard': { name: 'Radio Ibiza', logo: 'https://radioibiza.it/wp-content/uploads/2021/09/cropped-logo_header.png' }
+				};
+				
 				player.play().then(() => {
 					currentUrl= url;
 					document.getElementById(cardId).classList.add('active');
 					
 					if ('mediaSession' in navigator) {
-						let radioName = (cardId === 'rdsCard') ? 'RDS' : 'RTL 102.5';
-						let logoUrl = (cardId === 'rdsCard') 
-							? 'https://upload.wikimedia.org/wikipedia/commons/7/73/RDS-Logo.png' 
-							: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png';
-
 						navigator.mediaSession.metadata = new MediaMetadata({
-							title: radioName,
+							title: radioData[cardId].name,
 							artist: 'La Mia Radio HQ',
 							artwork: [
-								{ src: logoUrl, sizes: '512x512', type: 'image/png' }
+								{ src: radioData[cardId].logo, sizes: '512x512', type: 'image/png' }
 							]
 						});
 						
@@ -135,6 +172,10 @@
 			document.addEventListener('DOMContentLoaded', () => {
 				document.getElementById('rdsCard')?.addEventListener('click', () => window.playRadio('https://icstream.rds.radio/rds', 'rdsCard'));
 				document.getElementById('rtlCard')?.addEventListener('click', () => window.playRadio('https://streamingv2.shoutcast.com/rtl-1025', 'rtlCard'));
+				document.getElementById('zetaCard')?.addEventListener('click', () => window.playRadio('https://shoutcast.rtl.it/stream/3/', 'zetaCard'));
+				document.getElementById('rtlCalienteCard')?.addEventListener('click', () => window.playRadio('https://stream.laut.fm/reggaeton', 'rtlCalienteCard'));
+				document.getElementById('rtlDiscoCard')?.addEventListener('click', () => window.playRadio('https://stream.laut.fm/disco', 'rtlDiscoCard'));
+				document.getElementById('ibizaCard')?.addEventListener('click', () => window.playRadio('https://ice07.fluidstream.net/Ibiza.mp3', 'ibizaCard'));
 				document.getElementById('stopBtn')?.addEventListener('click', () => window.stopRadio());
 				document.getElementById('volCustomBtn')?.addEventListener('click', () => window.setCustomVolume());
 				document.getElementById('vol20Btn')?.addEventListener('click', () => window.setVolume(0.2));

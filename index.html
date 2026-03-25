@@ -103,27 +103,17 @@
 			</div>
 		</div>
 		
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 		<script>
-			const player= document.getElementById("radioPlayer");
-			player.volume= 0.5;
-			let currentUrl= "";
+			const player = document.getElementById("radioPlayer");
+			player.volume = 0.5;
+			let currentUrl = "";
+            let hls = null; // Variabile per gestire il player HLS
 			
-			window.playRadio= function(url, cardId) {
-				document.querySelectorAll('.radio-card').forEach(card => card.classList.remove('active'));
-				player.pause();
-				player.src= url;
-				
-				const radioData = {
-					'rdsCard': { name: 'RDS', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/73/RDS-Logo.png' },
-					'rtlCard': { name: 'RTL 102.5', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
-					'rtlCalienteCard': { name: 'RTL 102.5 Caliente', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
-					'rtlDiscoCard': { name: 'RTL 102.5 Disco', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
-					'zetaCard': { name: 'Radio Zeta', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Radio_Zeta_-_Logo_2020.svg/330px-Radio_Zeta_-_Logo_2020.svg.png' },
-					'ibizaCard': { name: 'Radio Ibiza', logo: 'https://radioibiza.it/wp-content/uploads/2021/09/cropped-logo_header.png' }
-				};
-				
-				player.play().then(() => {
-					currentUrl= url;
+            // Funzione di supporto per far partire l'audio e settare i metadati
+            const startPlaybackAndMetadata = (url, cardId, radioData) => {
+                player.play().then(() => {
+					currentUrl = url;
 					document.getElementById(cardId).classList.add('active');
 					
 					if ('mediaSession' in navigator) {
@@ -140,28 +130,72 @@
 						});
 					}
 				}).catch(err => {
-					console.error("Errore riproduzione");
+					console.error("Errore riproduzione:", err);
 				});
+            };
+
+			window.playRadio = function(url, cardId) {
+                if (currentUrl === url) return;
+
+				document.querySelectorAll('.radio-card').forEach(card => card.classList.remove('active'));
+				player.pause();
+				
+                // Distruggiamo l'istanza HLS precedente se esiste
+                if (hls) {
+                    hls.destroy();
+                    hls = null;
+                }
+
+				const radioData = {
+					'rdsCard': { name: 'RDS', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/73/RDS-Logo.png' },
+					'rtlCard': { name: 'RTL 102.5', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
+					'rtlCalienteCard': { name: 'RTL 102.5 Caliente', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
+					'rtlDiscoCard': { name: 'RTL 102.5 Disco', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
+					'zetaCard': { name: 'Radio Zeta', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Radio_Zeta_-_Logo_2020.svg/330px-Radio_Zeta_-_Logo_2020.svg.png' },
+					'ibizaCard': { name: 'Radio Ibiza', logo: 'https://radioibiza.it/wp-content/uploads/2021/09/cropped-logo_header.png' }
+				};
+				
+                // Controllo: è un flusso HLS (.m3u8) o uno normale (mp3/aac)?
+                if (url.endsWith('.m3u8')) {
+                    if (Hls.isSupported()) {
+                        hls = new Hls();
+                        hls.loadSource(url);
+                        hls.attachMedia(player);
+                        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                            startPlaybackAndMetadata(url, cardId, radioData);
+                        });
+                    } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+                        // Fallback per Safari
+                        player.src = url;
+                        startPlaybackAndMetadata(url, cardId, radioData);
+                    }
+                } else {
+                    // Flusso standard
+                    player.src = url;
+                    startPlaybackAndMetadata(url, cardId, radioData);
+                }
 			}
 			
-			window.stopRadio= function() {
+			window.stopRadio = function() {
 				player.pause();
-				player.src= "";
-				currentUrl= "";
+				player.src = "";
+				currentUrl = "";
+                if (hls) {
+                    hls.destroy();
+                    hls = null;
+                }
 				document.querySelectorAll('.radio-card').forEach(card => card.classList.remove('active'));
 			}
 			
-			window.setVolume= function(level) {
-				player.volume= level;
+			window.setVolume = function(level) {
+				player.volume = level;
 			}
 			
-			window.setCustomVolume= function() {
-				let inputBox= document.getElementById('customVolInput');
-				if(!inputBox) {
-					return;
-				}
+			window.setCustomVolume = function() {
+				let inputBox = document.getElementById('customVolInput');
+				if(!inputBox) return;
 				
-				let volValue= parseInt(inputBox.value);
+				let volValue = parseInt(inputBox.value);
 				if (!isNaN(volValue)) {
 					volValue = Math.min(Math.max(volValue, 0), 100);
 					player.volume = volValue / 100;
@@ -170,13 +204,15 @@
 			}
 			
 			document.addEventListener('DOMContentLoaded', () => {
+                // Nuovi flussi aggiornati integrati
 				document.getElementById('rdsCard')?.addEventListener('click', () => window.playRadio('https://icstream.rds.radio/rds', 'rdsCard'));
 				document.getElementById('rtlCard')?.addEventListener('click', () => window.playRadio('https://streamingv2.shoutcast.com/rtl-1025', 'rtlCard'));
-				document.getElementById('zetaCard')?.addEventListener('click', () => window.playRadio('https://shoutcast.rtl.it/stream/3/', 'zetaCard'));
-				document.getElementById('rtlCalienteCard')?.addEventListener('click', () => window.playRadio('https://stream.laut.fm/reggaeton', 'rtlCalienteCard'));
-				document.getElementById('rtlDiscoCard')?.addEventListener('click', () => window.playRadio('https://stream.laut.fm/disco', 'rtlDiscoCard'));
+				document.getElementById('zetaCard')?.addEventListener('click', () => window.playRadio('https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S9346184/XEx1LqlYbNic/playlist_video.m3u8', 'zetaCard'));
+				document.getElementById('rtlCalienteCard')?.addEventListener('click', () => window.playRadio('https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S8448465/zTYa1Z5Op9ue/playlist_video.m3u8', 'rtlCalienteCard'));
+				document.getElementById('rtlDiscoCard')?.addEventListener('click', () => window.playRadio('https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S51100361/0Fb4R3k82b5Z/playlist_video.m3u8', 'rtlDiscoCard'));
 				document.getElementById('ibizaCard')?.addEventListener('click', () => window.playRadio('https://ice07.fluidstream.net/Ibiza.mp3', 'ibizaCard'));
-				document.getElementById('stopBtn')?.addEventListener('click', () => window.stopRadio());
+				
+                document.getElementById('stopBtn')?.addEventListener('click', () => window.stopRadio());
 				document.getElementById('volCustomBtn')?.addEventListener('click', () => window.setCustomVolume());
 				document.getElementById('vol20Btn')?.addEventListener('click', () => window.setVolume(0.2));
 				document.getElementById('vol50Btn')?.addEventListener('click', () => window.setVolume(0.5));

@@ -27,6 +27,14 @@
 						</div>
 					</div>
 					
+					<div class="radio-card" id="italiaCard">
+						<i class="fa-solid fa-circle-play play-indicator"></i>
+						<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Radio_Italia_logo_%282020%29.svg/330px-Radio_Italia_logo_%282020%29.svg.png" alt="Radio Italia Logo" class="radio-logo">
+						<div class="radio-info">
+							<span class="radio-name">Radio Italia</span>
+						</div>
+					</div>
+					
 					<div class="radio-card" id="rtlCard">
 						<i class="fa-solid fa-circle-play play-indicator"></i>
 						<img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png" alt="RTL 102.5 Logo" class="radio-logo">
@@ -152,7 +160,8 @@
 					'rtlCalienteCard': { name: 'RTL 102.5 Caliente', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
 					'rtlDiscoCard': { name: 'RTL 102.5 Disco', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/RTL_102.5_%28logo%29.png' },
 					'zetaCard': { name: 'Radio Zeta', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Radio_Zeta_-_Logo_2020.svg/330px-Radio_Zeta_-_Logo_2020.svg.png' },
-					'ibizaCard': { name: 'Radio Ibiza', logo: 'https://radioibiza.it/wp-content/uploads/2021/09/cropped-logo_header.png' }
+					'ibizaCard': { name: 'Radio Ibiza', logo: 'https://radioibiza.it/wp-content/uploads/2021/09/cropped-logo_header.png' },
+					'italiaCard': { name: 'Radio Italia', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Radio_Italia_logo_%282020%29.svg/330px-Radio_Italia_logo_%282020%29.svg.png' }
 				};
 				
                 // Controllo: è un flusso HLS (.m3u8) o uno normale (mp3/aac)?
@@ -211,6 +220,7 @@
 				document.getElementById('rtlCalienteCard')?.addEventListener('click', () => window.playRadio('https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S8448465/zTYa1Z5Op9ue/playlist_video.m3u8', 'rtlCalienteCard'));
 				document.getElementById('rtlDiscoCard')?.addEventListener('click', () => window.playRadio('https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S51100361/0Fb4R3k82b5Z/playlist_video.m3u8', 'rtlDiscoCard'));
 				document.getElementById('ibizaCard')?.addEventListener('click', () => window.playRadio('https://ice07.fluidstream.net/Ibiza.mp3', 'ibizaCard'));
+				document.getElementById('italiaCard')?.addEventListener('click', () => window.playRadio('https://radioitaliasmi.akamaized.net/hls/live/2093120/RISMI/stream01/streamPlaylist.m3u8', 'italiaCard'));
 				
                 document.getElementById('stopBtn')?.addEventListener('click', () => window.stopRadio());
 				document.getElementById('volCustomBtn')?.addEventListener('click', () => window.setCustomVolume());
